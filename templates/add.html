@@ -43,7 +43,7 @@
     <div class="col-md-4 warp">
         <form action="/add" method="post">
             <div class="form-group author_cover">
-                <input type="hidden" class="form-control" id="author" name="author">
+                <input type="text" class="form-control" id="author" name="author">
             </div>
             <div class="form-group">
                 <input type="text" class="form-control" id="title" name="title" placeholder="제목을 입력하세요">
@@ -53,7 +53,7 @@
                 <input type="url" class="form-control" id="url" name="url" placeholder="URL을 입력하세요">
             </div>
             <div class="form-group">
-                <select id="food" name="food" class="form-select" aria-label="Default select example">
+                <select id="category" name="category" class="form-select" aria-label="Default select example">
                     <option selected>--종류 선택--</option>
                     <option value="korea">한식</option>
                     <option value="china">중식</option>
@@ -66,8 +66,6 @@
 
                 <button type="submit" class="btn btn-primary btn_group" id="btn-save">등록</button>
                 <a href="/" role="button" class="btn btn-secondary btn_group">취소</a>
-
-
         </form>
 
     </div>

@@ -35,15 +35,15 @@
         }
     </style>
 
-
 </head>
 <body>
 <div id="header"></div>
 
 <div class="col-md-12">
     <div class="col-md-4 warp">
-        <form action="/add" method="post">
+        <form action="/update" method="post">
             {% for data in write_data %}
+                <input type="hidden" id="index" name="index" value="{{ index }}">
             <div class="form-group">
                 <input type="text" class="form-control" id="title" name="title" value="{{ data.title }}">
             </div>
@@ -52,7 +52,7 @@
                 <input type="url" class="form-control" id="url" name="url"value="{{ data.url }}">
             </div>
             <div class="form-group">
-                <select id="food" name="food" class="form-select" aria-label="Default select example">
+                <select id="category" name="category" class="form-select" aria-label="Default select example">
                     <option selected>--종류 선택--</option>
                     <option value="korea">한식</option>
                     <option value="china">중식</option>
@@ -79,10 +79,7 @@
         <script src="../static/js/scripts.js"></script>
         <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js" type="text/javascript"></script>
         <script>
-            $(document).ready(function () {
-                $("#header").load("header.html");
-                $("#footer").load("footer.html");
-            });
+
         </script>
 </body>
 </html>
