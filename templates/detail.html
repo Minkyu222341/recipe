@@ -25,24 +25,37 @@
             margin-right: 260px;
         }
 
-        iframe{
-            height: 400px;
-            width: 711px;
-        }
-
         .url {
             background-color: dimgrey;
             height: 400px;
-            width: 711px;
+            width: 1000px;
             margin: 10px auto;
             border-radius: 15px;
+
+{#            {% for recipe in receipes %}#}
+{#            {% if recipe.index == {{ }} %}#}
+
+            background-size: contain;
+            background-position: center;
+            background-repeat: no-repeat;
+{#            {% endif %}#}
+{#            {% endfor %}#}
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .url > img {
+            height : 95%;
+            object-fit: cover;
         }
 
         .title {
             background-color: grey;
             height: 90px;
             line-height: 90px;
-            width: 711px;
+            width: 1000px;
             margin: 10px auto;
             text-align: center;
             border-radius: 15px;
@@ -52,7 +65,7 @@
             background-color: lightslategray;
             height: 500px;
             line-height: 90px;
-            width: 711px;
+            width: 1000px;
             margin: auto;
             text-align: center;
             border-radius: 15px;
@@ -87,22 +100,33 @@
     </style>
 </head>
 <script>
-    function update(board_id){
-        console.log(board_id)
-                window.location.href = '/update/'+board_id
-            }
+    $(document).ready(function () {
+            bucket();
+        });
+
+    function go_home() {
+        window.location.href = "/"
+    }
+
+    function go_edit() {
+        window.location.href = "/"
+    }
+
 </script>
 <body>
-
+    {% include "header.html" %}
     <div class="background">
+
         {% for recipe in recipes %}
-            {% set url = recipe["url"] %}
-            {% set url_split = url.split('/') %}
-            {% set url_img = "https://www.youtube.com/embed/"+ url_split[3]  %}
-            {% set board_id = "update(" + recipe["index"] + ")" %}
-            {{ board_id }}
+
+{#        {% if recipe.index == 1 %}#}
+
+{#        <div class="date">#}
+{#            <span>{{ recipe.date }}</span>#}
+{#        </div>#}
+
         <div class="url">
-            <iframe src={{url_img}} ></iframe>
+            <img src={{ recipe.url }} class='img-fluid'  alt="...">
         </div>
 
         <div class="title">
@@ -114,13 +138,13 @@
         </div>
 
         <div class="btn">
-            <button onclick="{{ board_id }}">수정하기</button>
+            <button onclick="go_edit()">수정하기</button>
             <button onclick="go_home()">홈으로 돌아가기</button>
         </div>
-    {% endfor %}
 
-
+{#        {% endif %}#}
+        {% endfor %}
     </div>
-
+    {% include "footer.html" %}
 </body>
 </html>

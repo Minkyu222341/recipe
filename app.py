@@ -1,22 +1,27 @@
 from flask import Flask, render_template, request, jsonify ,redirect
 app = Flask(__name__)
 
-from pymongo import MongoClient
-client = MongoClient('3.35.218.47', 27017, username="test", password="test")
-db = client.dbsparta_plus_week1
+import datetime
 
+current = datetime.datetime.now()
+current_time = current.replace(microsecond=0)
+print(current_time)
+
+from pymongo import MongoClient
+client = MongoClient('3.34.182.169', 27017, username="test", password="test")
+db = client.bucket  # DB 이름 수정
 
 @app.route('/')
 def home():
-    posts = list(db.board.find({}, {'_id': False}))
+    posts = list(db.bucket.find({}, {'_id': False}))
     # print(len(posts))
     print(posts)
-    return render_template('main.html',recipes_list=posts)
+    return render_template('main.html', recipes_list=posts)
 
 @app.route('/detail/<board_id>', methods=['GET'])
 def detail(board_id):
     print(board_id)
-    board = list(db.board.find({'index': board_id}))
+    board = list(db.bucket.find({'index': board_id}))
     return render_template("detail.html", recipes=board)
 
 @app.route('/add', methods=["GET"])
@@ -25,14 +30,14 @@ def add_page():
 
 @app.route('/update/<board_id>', methods=["GET"])
 def update_page(board_id):
-    write_data = list(db.board.find({'index': board_id}))
+    write_data = list(db.bucket.find({'index': board_id}))
     return render_template('update.html',write_data=write_data,index=board_id)
 
 @app.route('/update', methods=["POST"])
 def updatePost():
     title_receive = request.form.get("title", type=str)
     index_receive = request.form.get("index", type=str)
-    url_receive = request.form.get("url", type=str)
+    request.form.get("url", type=str)
     food_receive = request.form.get("catecory", type=str)
     content_receive = request.form.get("content", type=str)
     print(title_receive,index_receive)
@@ -43,7 +48,7 @@ def updatePost():
 
 @app.route("/add", methods=["POST"])
 def addPost():
-    posts = list(db.board.find({}))
+    posts = list(db.bucket.find({}))
     index = str(len(posts)+1)
     title_receive = request.form.get("title", type=str)
     author_receive = request.form.get("author", type=str)
@@ -57,9 +62,10 @@ def addPost():
         'url': url_receive,
         'author':author_receive,
         'category':category_receive,
-        'content':content_receive
+        'content':content_receive,
+        'time':current_time
     }
-    db.board.insert_one(doc)
+    db.bucket.insert_one(doc)
 
     return redirect("/")
 

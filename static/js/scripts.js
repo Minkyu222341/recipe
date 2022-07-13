@@ -5,3 +5,18 @@
 */
 // This file is intentionally blank
 // Use this file to add JavaScript to your project
+
+
+const list = document.querySelectorAll(".list li");
+for(let el of list){
+    el.addEventListener("click", e=>{
+        e.preventDefault();
+        console.log(e.currentTarget);
+    })
+}
+
+
+// link.addEventListener("click",(e)=>{
+//     e.preventDefault()
+//     console.log("링크를 클릭했습니다.")
+// });
