@@ -33,10 +33,13 @@ def updatePost():
     title_receive = request.form.get("title", type=str)
     index_receive = request.form.get("index", type=str)
     url_receive = request.form.get("url", type=str)
-    food_receive = request.form.get("catecory", type=str)
+    category_receive = request.form.get("category", type=str)
     content_receive = request.form.get("content", type=str)
     print(title_receive,index_receive)
     db.board.update_one({'index':index_receive},{'$set':{'title':title_receive}})
+    db.board.update_one({'index': index_receive}, {'$set': {'url': url_receive}})
+    db.board.update_one({'index': index_receive}, {'$set': {'category': category_receive}})
+    db.board.update_one({'index': index_receive}, {'$set': {'content': content_receive}})
 
     return redirect("/")
 
