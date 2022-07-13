@@ -31,11 +31,8 @@
                 console.log('/main/'+temp)
                 window.location.href = '/main/'+temp
             }
-
-            function to_detail(board_id){
-                window.location.href = '/detail/'+board_id
-            }
         </script>
+
         <style>
 
             .fix-bar{
@@ -66,39 +63,31 @@
         <div class="bg-whitesmoke py-5 fix">
             <div class="container px-4 px-lg-5 my-0">
                 <div class="text-center text-black-30">
-                    <a class="navbar-brand fix-bar" onclick="main(1)">한식</a>
-                    <a class="navbar-brand fix-bar" onclick="main(2)">일식</a>
-                    <a class="navbar-brand fix-bar" onclick="main(3)">중식</a>
-                    <a class="navbar-brand fix-bar" onclick="main(4)">양식</a>
+                    <a class="navbar-brand fix-bar" onclick="main(1)">채소</a>
+                    <a class="navbar-brand fix-bar" onclick="main(2)">육류</a>
+                    <a class="navbar-brand fix-bar" onclick="main(3)">해산물</a>
+                    <a class="navbar-brand fix-bar" onclick="main(4)">과일</a>
                 </div>
             </div>
         </div>
         <section>
-
-            {% for list in recipes_list %}
-                {% set board_id = "to_detail(" + list["id"] + ")" %}
-                {% set title = list["title"] %}
-                {% set url = list["url"] %}
-                {% set url_split = url.split('/') %}
-                {% set url_img = "https://img.youtube.com/vi/"+ url_split[3] +"/mqdefault.jpg"  %}
-                {% set content = list["content"] %}
-                <div onclick = {{board_id}} class="card mb-6 mt-5" style="max-width: 810px;">
-                  <div class="row g-0">
-                    <div class="col-md-4">
-                      <img src={{ url_img }} class="img-fluid rounded-start" alt="...">
-                    </div>
-                    <div class="col-md-8">
-                      <div class="card-body">
-                        <h5 class="card-title">{{ title }}</h5>
-                        <p class="card-text">{{ content }}</p>
-                        <p class="card-text"><small class="text-muted">Last updated 3 mins ago</small></p>
-                      </div>
-                    </div>
+            <div onclick = "to_detail()" class="card mb-6 mt-5" style="max-width: 810px;">
+              <div class="row g-0">
+                <div class="col-md-4">
+                  <img src="https://img.youtube.com/vi/VaqxP68RNvg/mqdefault.jpg" class="img-fluid rounded-start" alt="...">
+                </div>
+                <div class="col-md-8">
+                  <div class="card-body">
+                    <h5 class="card-title">Card title</h5>
+                    <p class="card-text">This is a wider card with supporting text below as a natural lead-in to additional content. This content is a little bit longer.</p>
+                    <p class="card-text"><small class="text-muted">Last updated 3 mins ago</small></p>
                   </div>
                 </div>
-            {% endfor  %}
-
+              </div>
+            </div>
         </section>
+
         {% include "footer.html" %}
+
     </body>
 </html>
