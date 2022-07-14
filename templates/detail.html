@@ -91,6 +91,11 @@
         console.log(board_id)
                 window.location.href = '/update/'+board_id
             }
+
+    function go_home() {
+        window.location.href = '/home_main'
+    }
+
 </script>
 <body>
 
@@ -99,8 +104,8 @@
             {% set url = recipe["url"] %}
             {% set url_split = url.split('/') %}
             {% set url_img = "https://www.youtube.com/embed/"+ url_split[3]  %}
-            {% set board_id = "update(" + recipe["index"] + ")" %}
-            {{ board_id }}
+            {% set board_id = "update(" + recipe["id"] + ")" %}
+            {% set member_id = recipe['member_id']['nick'] %}
         <div class="url">
             <iframe src={{url_img}} ></iframe>
         </div>
@@ -114,7 +119,10 @@
         </div>
 
         <div class="btn">
-            <button onclick="{{ board_id }}">수정하기</button>
+
+        {% if nickname==member_id %}
+         <button onclick="{{ board_id }}">수정하기</button>
+        {% endif %}
             <button onclick="go_home()">홈으로 돌아가기</button>
         </div>
     {% endfor %}
