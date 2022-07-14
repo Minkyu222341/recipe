@@ -23,7 +23,7 @@ import hashlib
 def home():
    token_receive = request.cookies.get('mytoken')
    try:
-       recipes_list = list(db.recipe.find({}, {'_id': False}))
+       recipes_list = list(db.board.find({}, {'_id': False}))
        payload = jwt.decode(token_receive, SECRET_KEY, algorithms=['HS256'])
        user_info = db.member.find_one({"id": payload['id']})
        return render_template('main.html', recipes_list=recipes_list, nickname=user_info["nick"])
@@ -34,7 +34,7 @@ def home():
 
 @app.route('/home_main')
 def home_main():
-   recipes_list = list(db.recipe.find({}, {'_id': False}))
+   recipes_list = list(db.board.find({}, {'_id': False}))
    return render_template('main.html', recipes_list=recipes_list, nickname="")
 
 
@@ -42,19 +42,29 @@ def home_main():
 def main(category):
     # print(category)
     if category == "all":
-        recipes_list = list(db.recipe.find({ }, {'_id': False}))
+        recipes_list = list(db.board.find({ }, {'_id': False}))
     else:
-        recipes_list = list(db.recipe.find({'food': category}))
+        recipes_list = list(db.board.find({'category': category}))
         #print(recipes_list)
-    return render_template("main_"+category+".html", recipes_list=recipes_list)
+    return render_template("main.html", recipes_list=recipes_list)
 
 @app.route('/detail/<board_id>', methods=['GET'])
 def detail(board_id):
-    print(board_id)
-    recipes = list(db.recipe.find({'id': board_id}))
-    print(recipes)
-    return render_template("detail.html", recipes=recipes)
+    token_receive = request.cookies.get('mytoken')
+    try:
+        board = list(db.board.find({'id': board_id}))
+        payload = jwt.decode(token_receive, SECRET_KEY, algorithms=['HS256'])
+        user_info = db.member.find_one({"id": payload['id']})
+        return render_template("detail.html", recipes=board, nickname=user_info["nick"])
+    except jwt.ExpiredSignatureError:
+        return redirect(url_for("detail_none", board_id=board_id))
+    except jwt.exceptions.DecodeError:
+        return redirect(url_for("detail_none", board_id=board_id))
 
+@app.route('/detail_none/<board_id>')
+def detail_none(board_id):
+    board = list(db.board.find({'id': board_id}))
+    return render_template("detail.html", recipes=board, nickname="")
 
 @app.route('/login')
 def login():
@@ -68,19 +78,28 @@ def register():
 
 @app.route('/add', methods=["GET"])
 def add_page():
-    token_receive = request.cookies.get('mytoken')
-    payload = jwt.decode(token_receive, SECRET_KEY, algorithms=['HS256'])
-    user_info = db.member.find_one({"id": payload['id']})
-    return render_template('add.html', nickname=user_info["nick"])
+    try:
+        token_receive = request.cookies.get('mytoken')
+        payload = jwt.decode(token_receive, SECRET_KEY, algorithms=['HS256'])
+        user_info = db.member.find_one({"id": payload['id']})
+        return render_template('add.html', nickname=user_info["nick"])
+    except jwt.ExpiredSignatureError:
+        return redirect(url_for("login", msg="로그인 시간이 만료되었습니다."))
+    except jwt.exceptions.DecodeError:
+        return redirect(url_for("login", msg="로그인 정보가 존재하지 않습니다."))
 
 @app.route('/update/<board_id>', methods=["GET"])
 def update_page(board_id):
-    token_receive = request.cookies.get('mytoken')
-    payload = jwt.decode(token_receive, SECRET_KEY, algorithms=['HS256'])
-    user_info = db.member.find_one({"id": payload['id']})
-    write_data = list(db.board.find({'index': board_id}))
-    return render_template('update.html',write_data=write_data, index=board_id, user_info=user_info["nick"])
-
+    try:
+        token_receive = request.cookies.get('mytoken')
+        payload = jwt.decode(token_receive, SECRET_KEY, algorithms=['HS256'])
+        user_info = db.member.find_one({"id": payload['id']})
+        write_data = list(db.board.find({'index': board_id}))
+        return render_template('update.html',write_data=write_data, index=board_id, user_info=user_info["nick"])
+    except jwt.ExpiredSignatureError:
+        return redirect(url_for("login", msg="로그인 시간이 만료되었습니다."))
+    except jwt.exceptions.DecodeError:
+        return redirect(url_for("login", msg="로그인 정보가 존재하지 않습니다."))
 # [회원가입 API]
 # id, pw, nickname을 받아서, mongoDB에 저장합니다.
 # 저장하기 전에, pw를 sha256 방법(=단방향 암호화. 풀어볼 수 없음)으로 암호화해서 저장합니다.
@@ -159,40 +178,42 @@ def api_valid():
 @app.route('/update', methods=["POST"])
 def updatePost():
     title_receive = request.form.get("title", type=str)
-    index_receive = request.form.get("index", type=str)
+    index_receive = request.form.get("id", type=str)
     url_receive = request.form.get("url", type=str)
     category_receive = request.form.get("category", type=str)
     content_receive = request.form.get("content", type=str)
     print(title_receive,index_receive)
-    db.board.update_one({'index':index_receive},{'$set':{'title':title_receive}})
-    db.board.update_one({'index': index_receive}, {'$set': {'url': url_receive}})
-    db.board.update_one({'index': index_receive}, {'$set': {'category': category_receive}})
-    db.board.update_one({'index': index_receive}, {'$set': {'content': content_receive}})
+    db.board.update_one({'id':index_receive},{'$set':{'title':title_receive}})
+    db.board.update_one({'id': index_receive}, {'$set': {'url': url_receive}})
+    db.board.update_one({'id': index_receive}, {'$set': {'category': category_receive}})
+    db.board.update_one({'id': index_receive}, {'$set': {'content': content_receive}})
 
     return redirect("/")
 
 
 @app.route("/add", methods=["POST"])
 def addPost():
+    token_receive = request.cookies.get('mytoken')
+    payload = jwt.decode(token_receive, SECRET_KEY, algorithms=['HS256'])
+    member_id = db.member.find_one({"id": payload['id']})
     posts = list(db.board.find({}))
-    index = str(len(posts)+1)
+    id = str(len(posts)+1)
     title_receive = request.form.get("title", type=str)
     url_receive = request.form.get("url", type=str)
     category_receive = request.form.get("category", type=str)
-    author_receive = request.form.get("author", type=str)
     content_receive = request.form.get("content", type=str)
-    print(title_receive,author_receive,url_receive,category_receive,content_receive)
+
     doc={
-        'index':index,
+        'id':id,
         'title':title_receive,
         'url': url_receive,
-        'author':author_receive,
         'category':category_receive,
-        'content':content_receive
+        'content':content_receive,
+        'member_id': member_id,
+        'date': str(current_time)
     }
     db.board.insert_one(doc)
 
     return redirect("/")
-
 if __name__ == '__main__':
    app.run('0.0.0.0', port=5000, debug=True)

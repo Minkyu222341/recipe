@@ -39,7 +39,25 @@
             function logout(){
                 $.removeCookie('mytoken');
                 window.location.href='/home_main'
-              }
+            }
+
+            function time2str(date) {
+                let today = new Date()
+                let time = (today - date) / 1000 / 60  // 분
+
+                if (time < 60) {
+                    return parseInt(time) + "분 전"
+                }
+                time = time / 60  // 시간
+                if (time < 24) {
+                    return parseInt(time) + "시간 전"
+                }
+                time = time / 24
+                if (time < 7) {
+                    return parseInt(time) + "일 전"
+                }
+                return `${date.getFullYear()}년 ${date.getMonth() + 1}월 ${date.getDate()}일`
+            }
         </script>
         <style>
             .loginbtn{
@@ -73,31 +91,7 @@
         </style>
     </head>
     <body>
-        <nav class="navbar navbar-expand-lg navbar-light bg-light">
-            <div class="container px-4 px-lg-5">
-                <a class="navbar-brand" href="#!">Recipes</a>
-                <div  id="navbarSupportedContent">
-                    <div class="loginbtn">
-                        {% if  nickname %}
-                            <h6 id="nick">{{nickname}}님 환영합니다.</h6>
-                            &nbsp;
-                            <button class="btn btn-outline-dark login" onclick="logout()"> <!--type="submit">-->
-                                로그아웃
-                            </button>
-                        {% else %}
-                            <button class="btn btn-outline-dark login" onclick="window.location.href = '/login'"> <!--type="submit">-->
-                                로그인
-                            </button>
-                            &nbsp;
-                            <button class="btn btn-outline-dark join" onclick="window.location.href = '/register'"> <!--type="submit">-->
-                                회원가입
-                            </button>
 
-                        {% endif %}
-                    </div>
-                </div>
-            </div>
-        </nav>
         {% include "header.html" %}
 
         <div class="bg-whitesmoke py-5 fix">
@@ -111,30 +105,29 @@
             </div>
         </div>
         <section>
-
             {% for list in recipes_list %}
-                {% set board_id = "to_detail(" + list["id"] + ")" %}
+                {% set board_id = list["id"] %}
                 {% set title = list["title"] %}
                 {% set url = list["url"] %}
                 {% set url_split = url.split('/') %}
                 {% set url_img = "https://img.youtube.com/vi/"+ url_split[3] +"/mqdefault.jpg"  %}
                 {% set content = list["content"] %}
-                <div onclick = {{board_id}} class="card mb-6 mt-5" style="max-width: 810px;">
+                {% set date = list["date"] %}
+                <div onclick="to_detail('{{board_id}}')" class="card mb-6 mt-5" style="max-width: 810px;">
                   <div class="row g-0">
                     <div class="col-md-4">
-                      <img src={{ url_img }} class="img-fluid rounded-start" alt="...">
+                      <img src="{{ url_img }}" class="img-fluid rounded-start" alt="...">
                     </div>
                     <div class="col-md-8">
                       <div class="card-body">
                         <h5 class="card-title">{{ title }}</h5>
                         <p class="card-text">{{ content }}</p>
-                        <p class="card-text"><small class="text-muted">Last updated 3 mins ago</small></p>
+                        <p class="card-text" ><small class="text-muted">{{date}}</small></p>
                       </div>
                     </div>
                   </div>
                 </div>
-            {% endfor  %}
-
+            {% endfor %}
         </section>
         {% include "footer.html" %}
     </body>
