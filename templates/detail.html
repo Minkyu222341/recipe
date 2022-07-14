@@ -93,8 +93,9 @@
             }
 
     function go_home() {
-        window.location.href = '/home_main'
+        window.location.href = '/'
     }
+
 
 </script>
 <body>
@@ -122,6 +123,7 @@
 
         {% if nickname==member_id %}
          <button onclick="{{ board_id }}">수정하기</button>
+         <button onclick="del()">삭제하기</button>
         {% endif %}
             <button onclick="go_home()">홈으로 돌아가기</button>
         </div>

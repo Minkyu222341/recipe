@@ -40,6 +40,8 @@
                 $.removeCookie('mytoken');
                 window.location.href='/home_main'
             }
+
+
         </script>
         <style>
             .loginbtn{
@@ -87,7 +89,6 @@
             </div>
         </div>
         <section>
-
             {% for list in recipes_list %}
                 {% set board_id = list["id"] %}
                 {% set title = list["title"] %}

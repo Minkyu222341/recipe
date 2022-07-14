@@ -36,16 +36,15 @@ def home_main():
    recipes_list = list(db.board.find({}, {'_id': False}))
    return render_template('main.html', recipes_list=recipes_list, nickname="")
 
-
 @app.route('/main/<category>', methods=['GET'])
 def main(category):
     # print(category)
     if category == "all":
-        recipes_list = list(db.recipe.find({ }, {'_id': False}))
+        recipes_list = list(db.board.find({ }, {'_id': False}))
     else:
-        recipes_list = list(db.recipe.find({'food': category}))
+        recipes_list = list(db.board.find({'category': category}))
         #print(recipes_list)
-    return render_template("main_"+category+".html", recipes_list=recipes_list)
+    return render_template("main.html", recipes_list=recipes_list)
 
 @app.route('/detail/<board_id>', methods=['GET'])
 def detail(board_id):
@@ -58,7 +57,8 @@ def detail(board_id):
         return render_template("detail.html", recipes=board, nickname=user_info["nick"])
     except jwt.exceptions.DecodeError:
         return render_template("detail.html", recipes=board)
-
+    except jwt.ExpiredSignatureError:
+        return render_template("detail.html", recipes=board)
 
 @app.route('/add', methods=["GET"])
 def add_page():
@@ -99,7 +99,7 @@ def addPost():
     url_receive = request.form.get("url", type=str)
     category_receive = request.form.get("category", type=str)
     content_receive = request.form.get("content", type=str)
-    date = "20:20:20"
+    date = datetime.datetime.now()
     doc={
         'id':id,
         'title':title_receive,
@@ -111,6 +111,12 @@ def addPost():
     }
     db.board.insert_one(doc)
 
+    return redirect("/")
+
+@app.route('/delete', methods=["POST"])
+def delete():
+    index_receive = request.form.get("id", type=str)
+    db.board.delete_one({'id': index_receive})
     return redirect("/")
 
 
