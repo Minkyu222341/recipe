@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>1주차 과제(상세페이지)</title>
+
+    {# 부트스트랩 #}
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
+            integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
+            crossorigin="anonymous"></script>
+
+    {# 구글폰트 #}
+    <link href="https://fonts.googleapis.com/css2?family=Jua&display=swap" rel="stylesheet">
+
+    <style>
+        * {
+            font-family: 'Jua', sans-serif;
+        }
+
+        .date {
+            text-align: right;
+            margin-right: 260px;
+        }
+
+        .url {
+            background-color: dimgrey;
+            height: 400px;
+            width: 1000px;
+            margin: 10px auto;
+            border-radius: 15px;
+
+{#            {% for recipe in receipes %}#}
+{#            {% if recipe.index == {{ }} %}#}
+
+            background-size: contain;
+            background-position: center;
+            background-repeat: no-repeat;
+{#            {% endif %}#}
+{#            {% endfor %}#}
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .url > img {
+            height : 95%;
+            object-fit: cover;
+        }
+
+        .title {
+            background-color: grey;
+            height: 90px;
+            line-height: 90px;
+            width: 1000px;
+            margin: 10px auto;
+            text-align: center;
+            border-radius: 15px;
+        }
+
+        .content {
+            background-color: lightslategray;
+            height: 500px;
+            line-height: 90px;
+            width: 1000px;
+            margin: auto;
+            text-align: center;
+            border-radius: 15px;
+        }
+
+        .background {
+            background-color: white;
+            padding: 10px;
+        }
+
+        .btn {
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            justify-content: center;
+            margin-top: 5px;
+        }
+
+        .btn > button {
+            margin-right: 10px;
+            padding: 10px;
+            border-radius: 50px;
+            background-color: white;
+        }
+
+        .btn > button:hover {
+            padding: 10px;
+            border-radius: 50px;
+            background-color: black;
+            color: white;
+        }
+        .time {
+            width: 1000px;
+            margin: 10px auto;
+            text-align: right;
+        }
+    </style>
+</head>
+<script>
+    $(document).ready(function () {
+            bucket();
+        });
+
+    function go_home() {
+        window.location.href = "/"
+    }
+
+    function go_edit(a) {
+        window.location.href = "/update/" + a
+    }
+
+</script>
+<body>
+    {% include "header.html" %}
+    <div class="background">
+
+        {% for recipe in recipes %}
+
+        <div class="time">
+            <p> 작성자: {{ author }}, 작성시간: {{ recipe.time }}</p>
+        </div>
+        <div class="url">
+            <img src={{ recipe.url }} class='img-fluid'  alt="...">
+        </div>
+
+        <div class="title">
+            <span>{{ recipe.title }}</span>
+        </div>
+
+        <div class="content">
+            <span>{{ recipe.content }}</span>
+        </div>
+
+        <div class="btn">
+            <button onclick="go_edit({{ recipe.index }})">수정하기</button>
+            <button onclick="go_home()">홈으로 돌아가기</button>
+        </div>
+
+{#        {% endif %}#}
+        {% endfor %}
+    </div>
+    {% include "footer.html" %}
+</body>
+</html>
