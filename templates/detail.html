@@ -97,6 +97,10 @@
             background-color: black;
             color: white;
         }
+        .time {
+            text-align: right;
+            width: 1240px;
+        }
     </style>
 </head>
 <script>
@@ -108,8 +112,8 @@
         window.location.href = "/"
     }
 
-    function go_edit() {
-        window.location.href = "/"
+    function go_edit(a) {
+        window.location.href = "/update/" + a
     }
 
 </script>
@@ -119,12 +123,9 @@
 
         {% for recipe in recipes %}
 
-{#        {% if recipe.index == 1 %}#}
-
-{#        <div class="date">#}
-{#            <span>{{ recipe.date }}</span>#}
-{#        </div>#}
-
+        <div class="time">
+            <p> 작성시간: {{ recipe.time }}</p>
+        </div>
         <div class="url">
             <img src={{ recipe.url }} class='img-fluid'  alt="...">
         </div>
@@ -138,7 +139,7 @@
         </div>
 
         <div class="btn">
-            <button onclick="go_edit()">수정하기</button>
+            <button onclick="go_edit({{ recipe.index }})">수정하기</button>
             <button onclick="go_home()">홈으로 돌아가기</button>
         </div>
 
