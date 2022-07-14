@@ -17,6 +17,9 @@ import datetime
 # 그렇지 않으면, 개발자(=나)가 회원들의 비밀번호를 볼 수 있으니까요.^^;
 import hashlib
 
+# 시간
+current = datetime.datetime.now()
+current_time = current.replace(microsecond=0)
 
 @app.route('/')
 def home():
@@ -51,24 +54,49 @@ def detail(board_id):
     token_receive = request.cookies.get('mytoken')
     try:
         board = list(db.board.find({'id': board_id}))
-        print(board)
         payload = jwt.decode(token_receive, SECRET_KEY, algorithms=['HS256'])
         user_info = db.member.find_one({"id": payload['id']})
         return render_template("detail.html", recipes=board, nickname=user_info["nick"])
-    except jwt.exceptions.DecodeError:
-        return render_template("detail.html", recipes=board)
     except jwt.ExpiredSignatureError:
-        return render_template("detail.html", recipes=board)
+        return redirect(url_for("detail_none", board_id=board_id))
+    except jwt.exceptions.DecodeError:
+        return redirect(url_for("detail_none", board_id=board_id))
+
+@app.route('/detail_none/<board_id>')
+def detail_none(board_id):
+    board = list(db.board.find({'id': board_id}))
+    return render_template("detail.html", recipes=board, nickname="")
 
 @app.route('/add', methods=["GET"])
 def add_page():
-    return render_template('add.html')
+    try:
+        token_receive = request.cookies.get('mytoken')
+        payload = jwt.decode(token_receive, SECRET_KEY, algorithms=['HS256'])
+        user_info = db.member.find_one({"id": payload['id']})
+        return render_template('add.html', nickname=user_info["nick"])
+    except jwt.ExpiredSignatureError:
+        return redirect(url_for("login", msg="로그인 시간이 만료되었습니다."))
+    except jwt.exceptions.DecodeError:
+        return redirect(url_for("login", msg="로그인 정보가 존재하지 않습니다."))
+
+@app.route('/delete/<board_id>', methods=["GET"])
+def delete_page(board_id):
+    db.board.delete_one({'id': board_id})
+    return redirect("/")
 
 
 @app.route('/update/<board_id>', methods=["GET"])
 def update_page(board_id):
-    write_data = list(db.board.find({'id': board_id}))
-    return render_template('update.html', write_data=write_data, id=board_id)
+    try:
+        token_receive = request.cookies.get('mytoken')
+        payload = jwt.decode(token_receive, SECRET_KEY, algorithms=['HS256'])
+        user_info = db.member.find_one({"id": payload['id']})
+        write_data = list(db.board.find({'id': board_id}))
+        return render_template('update.html',write_data=write_data, id=board_id, user_info=user_info["nick"])
+    except jwt.ExpiredSignatureError:
+        return redirect(url_for("login", msg="로그인 시간이 만료되었습니다."))
+    except jwt.exceptions.DecodeError:
+        return redirect(url_for("login", msg="로그인 정보가 존재하지 않습니다."))
 
 
 @app.route('/update', methods=["POST"])
@@ -99,7 +127,6 @@ def addPost():
     url_receive = request.form.get("url", type=str)
     category_receive = request.form.get("category", type=str)
     content_receive = request.form.get("content", type=str)
-    date = datetime.datetime.now()
     doc={
         'id':id,
         'title':title_receive,
@@ -107,16 +134,9 @@ def addPost():
         'category':category_receive,
         'content':content_receive,
         'member_id': member_id,
-        'date':date
+        'date':str(current_time)
     }
     db.board.insert_one(doc)
-
-    return redirect("/")
-
-@app.route('/delete', methods=["POST"])
-def delete():
-    index_receive = request.form.get("id", type=str)
-    db.board.delete_one({'id': index_receive})
     return redirect("/")
 
 

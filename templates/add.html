@@ -10,7 +10,9 @@
           integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
 
     <style>
-        *{
+        .write-box{
+            display: flex;
+            justify-content: center;
             margin: auto;
         }
         .warp{
@@ -33,13 +35,23 @@
         .btn_group{
             margin: 10px auto 10px auto;
         }
+        #nick{
+            margin-bottom: auto;
+            margin-top: auto;
+        }
     </style>
 
+    <script>
+        function logout() {
+            $.removeCookie('mytoken');
+            window.location.href = '/home_main'
+        }
 
+    </script>
 </head>
 <body>
-<div id="header"></div>
-<div class="col-md-12">
+{% include "header.html" %}
+<div class="col-md-12 write-box">
     <div class="col-md-4 warp">
         <form action="/add" method="post">
             <div class="form-group author_cover">

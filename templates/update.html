@@ -29,7 +29,12 @@
             margin: 10px auto 10px auto;
         }
     </style>
+    <script>function logout() {
+        $.removeCookie('mytoken');
+        window.location.href = '/home_main'
+    }
 
+    </script>
 </head>
 <body>
 <div id="header"></div>

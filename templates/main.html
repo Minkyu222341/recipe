@@ -14,6 +14,9 @@
         <link href="..\static\css\styles.css" rel="stylesheet"/>
         <style>
 
+
+
+
         </style>
         <!-- Bootstrap core JS-->
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
@@ -72,6 +75,8 @@
                 margin-bottom: auto;
                 margin-top: auto;
             }
+            .on_hover:hover{cursor:pointer}
+
         </style>
     </head>
     <body>
@@ -80,7 +85,7 @@
 
         <div class="bg-whitesmoke py-5 fix">
             <div class="container px-4 px-lg-5 my-0">
-                <div class="text-center text-black-30">
+                <div class="text-center text-black-30 on_hover" >
                     <a class="navbar-brand fix-bar" onclick="main(1)">한식</a>
                     <a class="navbar-brand fix-bar" onclick="main(2)">일식</a>
                     <a class="navbar-brand fix-bar" onclick="main(3)">중식</a>
@@ -96,7 +101,8 @@
                 {% set url_split = url.split('/') %}
                 {% set url_img = "https://img.youtube.com/vi/"+ url_split[3] +"/mqdefault.jpg"  %}
                 {% set content = list["content"] %}
-                <div onclick="to_detail('{{board_id}}')" class="card mb-6 mt-5" style="max-width: 810px;">
+                {% set date= list["date"] %}
+                <div onclick="to_detail('{{board_id}}')" class="card mb-6 mt-5 on_hover" style="max-width: 810px;">
                   <div class="row g-0">
                     <div class="col-md-4">
                       <img src="{{ url_img }}" class="img-fluid rounded-start" alt="...">
@@ -105,7 +111,7 @@
                       <div class="card-body">
                         <h5 class="card-title">{{ title }}</h5>
                         <p class="card-text">{{ content }}</p>
-                        <p class="card-text"><small class="text-muted">Last updated 3 mins ago</small></p>
+                        <p class="card-text"><small class="text-muted">{{ date }}</small></p>
                       </div>
                     </div>
                   </div>

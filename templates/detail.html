@@ -19,6 +19,10 @@
         * {
             font-family: 'Jua', sans-serif;
         }
+        #nick{
+                margin-bottom: auto;
+                margin-top: auto;
+            }
 
         .date {
             text-align: right;
@@ -95,41 +99,45 @@
     function go_home() {
         window.location.href = '/'
     }
-
+    function logout(){
+        $.removeCookie('mytoken');
+        window.location.href='/detail'+"{{board_id}}"
+    }
+     function go_delete(a) {
+        window.location.href = "/delete/" + a
+    }
 
 </script>
 <body>
-
+    {% include "header.html" %}
     <div class="background">
-        {% for recipe in recipes %}
-            {% set url = recipe["url"] %}
-            {% set url_split = url.split('/') %}
-            {% set url_img = "https://www.youtube.com/embed/"+ url_split[3]  %}
-            {% set board_id = "update(" + recipe["id"] + ")" %}
-            {% set member_id = recipe['member_id']['nick'] %}
+        {% set url = recipes[0]["url"] %}
+        {% set url_split = url.split('/') %}
+        {% set url_img = "https://www.youtube.com/embed/"+ url_split[3]  %}
+        {% set board_id = recipes[0]['id'] %}
+        {% set member_id = recipes[0]['member_id']['nick'] %}
+
         <div class="url">
             <iframe src={{url_img}} ></iframe>
         </div>
 
         <div class="title">
-            <span>{{ recipe.title }}</span>
+            <span>{{ recipes[0].title }}</span>
         </div>
 
         <div class="content">
-            <span>{{ recipe.content }}</span>
+            <span>{{ recipes[0].content }}</span>
         </div>
 
         <div class="btn">
 
         {% if nickname==member_id %}
-         <button onclick="{{ board_id }}">수정하기</button>
-         <button onclick="del()">삭제하기</button>
+         <button onclick="update('{{ board_id }}')">수정하기</button>
+         <button onclick="go_delete({{ board_id }})">게시글 삭제</button>
         {% endif %}
             <button onclick="go_home()">홈으로 돌아가기</button>
         </div>
-    {% endfor %}
-
-
+    {% include "footer.html" %}
     </div>
 
 </body>
