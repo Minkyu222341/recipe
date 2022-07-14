@@ -99,7 +99,7 @@
         }
         .time {
             text-align: right;
-            width: 1240px;
+            width: 1430px;
         }
     </style>
 </head>
@@ -124,7 +124,7 @@
         {% for recipe in recipes %}
 
         <div class="time">
-            <p> 작성시간: {{ recipe.time }}</p>
+            <p> 작성자: {{ author }}, 작성시간: {{ recipe.time }}</p>
         </div>
         <div class="url">
             <img src={{ recipe.url }} class='img-fluid'  alt="...">
